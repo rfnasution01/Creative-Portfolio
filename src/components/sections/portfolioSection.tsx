@@ -1,99 +1,147 @@
-import { PORTFOLIO_BLOG_LIST } from "@/data/blog";
-import { PORTFOLIO_APP_LIST } from "@/data/app";
-import { motion } from "framer-motion";
-import dayjs from "dayjs";
+import { useState } from "react";
+import { PORTFOLIO_DATA } from "@/data/portfolio";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 
-export function PortfolioSection() {
+const categories = ["all", "branding", "ui", "social"] as const;
+
+const modalVariants: Variants = {
+	hidden: { opacity: 0, scale: 0.9, y: 20 },
+	show: {
+		opacity: 1,
+		scale: 1,
+		y: 0,
+		transition: { type: "spring", stiffness: 300, damping: 25 },
+	},
+	exit: { opacity: 0, scale: 0.95, y: 10 },
+};
+
+export const PortfolioSection = () => {
+	const [active, setActive] = useState<string>("all");
+	const [selected, setSelected] = useState<number | null>(null);
+
+	const filtered =
+		active === "all"
+			? PORTFOLIO_DATA
+			: PORTFOLIO_DATA.filter((item) => item.category === active);
+
+	const selectedItem = PORTFOLIO_DATA.find((i) => i.id === selected);
+
 	return (
-		<section className="relative flex flex-col gap-20 py-24 overflow-hidden">
-			{/* BACKGROUND GLOW */}
-			<motion.div
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 0.08 }}
-				transition={{ duration: 1 }}
-				className="absolute left-1/2 top-0 -translate-x-1/2 w-[700px] h-[700px] bg-primary blur-[140px]"
-			/>
-
-			{/* ================= HEADER ================= */}
-			<motion.div
-				initial={{ opacity: 0, y: 40 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				viewport={{ once: true }}
-				transition={{ duration: 0.7 }}
-				className="flex flex-col gap-4"
-			>
-				<h2 className="text-primary text-[clamp(2rem,3vw,2.8rem)] font-bold drop-shadow-[0_0_12px_#99FF06]">
-					Portfolio
-				</h2>
-				<p className="text-gray-400 max-w-xl">
-					Showcasing selected works, experiments, and real-world projects.
-				</p>
-			</motion.div>
-
-			{/* ================= CONTENT ================= */}
-			<div className="grid md:grid-cols-2 gap-12">
-				{/* ================= BLOG ================= */}
-				<div className="flex flex-col gap-6">
-					<p className="text-white font-semibold text-lg">Blog</p>
-
-					<div className="flex flex-col gap-4">
-						{PORTFOLIO_BLOG_LIST.map((item, i) => (
-							<motion.a
-								key={i}
-								href={item.url}
-								target="_blank"
-								initial={{ opacity: 0, y: 30 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								viewport={{ once: true }}
-								transition={{ delay: i * 0.1 }}
-								whileHover={{ scale: 1.02 }}
-								className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl transition hover:border-primary hover:shadow-[0_0_30px_rgba(153,255,6,0.15)]"
-							>
-								{/* glow */}
-								<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(circle_at_left,rgba(153,255,6,0.15),transparent_70%)]"></div>
-
-								<p className="relative text-white font-medium leading-snug">
-									{item.title}
-								</p>
-
-								<p className="relative text-xs text-gray-500">
-									{dayjs(item.publishedAt).format("DD MMM YYYY")}
-								</p>
-							</motion.a>
-						))}
-					</div>
+		<section className="w-full px-6 py-20 max-w-6xl mx-auto">
+			{/* Header Editorial Style */}
+			<div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+				<div className="max-w-md">
+					<h2 className="text-4xl md:text-5xl font-serif tracking-tight">
+						Selected Works
+					</h2>
+					<p className="text-zinc-500 mt-4 font-medium">
+						A collection of projects where design meets functionality.
+					</p>
 				</div>
 
-				{/* ================= APPS ================= */}
-				<div className="flex flex-col gap-6">
-					<p className="text-white font-semibold text-lg">Apps</p>
-
-					<div className="flex flex-col gap-4">
-						{PORTFOLIO_APP_LIST.map((item, i) => (
-							<motion.div
-								key={i}
-								initial={{ opacity: 0, y: 30 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								viewport={{ once: true }}
-								transition={{ delay: i * 0.1 }}
-								whileHover={{ scale: 1.02 }}
-								className="group relative rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl transition hover:border-primary hover:shadow-[0_0_30px_rgba(153,255,6,0.15)]"
-							>
-								{/* glow */}
-								<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(circle_at_right,rgba(153,255,6,0.15),transparent_70%)]"></div>
-
-								<p className="relative text-white font-medium">{item.title}</p>
-
-								{item.description && (
-									<p className="relative text-sm text-gray-400 mt-1">
-										{item.description}
-									</p>
-								)}
-							</motion.div>
-						))}
-					</div>
+				<div className="flex gap-3 bg-zinc-100 p-1.5 rounded-[2rem]">
+					{categories.map((cat) => (
+						<button
+							key={cat}
+							onClick={() => setActive(cat)}
+							className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+								active === cat
+									? "bg-white text-black shadow-sm scale-105"
+									: "text-zinc-400 hover:text-zinc-600"
+							}`}
+						>
+							{cat}
+						</button>
+					))}
 				</div>
 			</div>
+
+			{/* Masonry-like Grid */}
+			<motion.div
+				layout
+				className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+			>
+				<AnimatePresence mode="popLayout">
+					{filtered.map((item) => (
+						<motion.div
+							key={item.id}
+							layout
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, scale: 0.9 }}
+							onClick={() => setSelected(item.id)}
+							className="group cursor-pointer"
+						>
+							<div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-zinc-100 shadow-inner">
+								<img
+									src={item.image}
+									alt={item.title}
+									className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 grayscale group-hover:grayscale-0"
+								/>
+
+								{/* Glassmorphism Badge */}
+								<div className="absolute top-6 left-6 px-4 py-1.5 bg-white/70 backdrop-blur-md border border-white/50 rounded-full">
+									<span className="text-[10px] font-black uppercase tracking-widest text-zinc-800">
+										{item.category}
+									</span>
+								</div>
+							</div>
+
+							<div className="mt-6 px-2">
+								<h3 className="text-xl font-bold tracking-tight text-zinc-900 group-hover:text-indigo-600 transition-colors">
+									{item.title}
+								</h3>
+								<div className="h-[1px] w-0 bg-indigo-600 group-hover:w-full transition-all duration-500 mt-1" />
+							</div>
+						</motion.div>
+					))}
+				</AnimatePresence>
+			</motion.div>
+
+			{/* MODAL ENHANCED */}
+			<AnimatePresence>
+				{selectedItem && (
+					<motion.div
+						className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 md:p-6"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						onClick={() => setSelected(null)}
+					>
+						<motion.div
+							variants={modalVariants}
+							initial="hidden"
+							animate="show"
+							exit="exit"
+							className="bg-white rounded-[3rem] overflow-hidden max-w-3xl w-full shadow-2xl"
+							onClick={(e) => e.stopPropagation()}
+						>
+							<div className="grid md:grid-cols-2">
+								<div className="h-64 md:h-[500px]">
+									<img
+										src={selectedItem.image}
+										className="w-full h-full object-cover"
+									/>
+								</div>
+								<div className="p-8 md:p-12 flex flex-col justify-center">
+									<span className="text-xs font-black uppercase tracking-[0.2em] text-indigo-500 mb-4">
+										{selectedItem.category}
+									</span>
+									<h3 className="text-3xl font-serif mb-6">
+										{selectedItem.title}
+									</h3>
+									<p className="text-zinc-500 leading-relaxed mb-8">
+										{selectedItem.description}
+									</p>
+									<button className="w-full py-4 bg-zinc-900 text-white rounded-2xl font-bold hover:bg-indigo-600 transition-colors">
+										Launch Case Study
+									</button>
+								</div>
+							</div>
+						</motion.div>
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</section>
 	);
-}
+};

@@ -1,23 +1,63 @@
-import ProfileImage from "@/assets/img/profiles.jpg";
+import ProfileImg from "@/assets/img/profiles.jpg";
 
-export type HeroData = {
-	headlines: string[];
-	title: string;
-	description: string;
-	image: string;
-	phone: string;
-};
+export type HeroCard =
+	| {
+			type: "intro";
+			name: string;
+			tagline: string;
+			description: string;
+	  }
+	| {
+			type: "image";
+			src: string;
+			alt: string;
+	  }
+	| {
+			type: "sticker";
+			text: string;
+	  }
+	| {
+			type: "cta";
+			primary: string;
+			secondary: string;
+	  }
+	| {
+			type: "social";
+			items: { label: string; url: string }[];
+	  };
 
-export const HERO_DATA: HeroData = {
-	headlines: [
-		"Budi Santoso, S.T.",
-		"Mining Engineer",
-		"Mine Planner",
-		"Operations Supervisor",
-	],
-	title: "Driving Safe, Efficient, and Sustainable Mining Operations.",
-	description: `I specialize in optimizing open-pit layouts, managing fleet 
-productivity, and ensuring rigorous safety standards to maximize mineral recovery.`,
-	image: ProfileImage,
-	phone: "6281234567890",
-};
+export const HERO_DATA: HeroCard[] = [
+	{
+		type: "intro",
+		name: "Your Name",
+		tagline: "Creative Designer",
+		description:
+			"I create bold visuals that help brands stand out and get noticed.",
+	},
+	{
+		type: "image",
+		src: ProfileImg,
+		alt: "profile",
+	},
+	{
+		type: "sticker",
+		text: "🎨 Creative Thinker",
+	},
+	{
+		type: "sticker",
+		text: "🚀 Open for Work",
+	},
+	{
+		type: "cta",
+		primary: "View Work",
+		secondary: "Download CV",
+	},
+	{
+		type: "social",
+		items: [
+			{ label: "Instagram", url: "#" },
+			{ label: "Dribbble", url: "#" },
+			{ label: "LinkedIn", url: "#" },
+		],
+	},
+];

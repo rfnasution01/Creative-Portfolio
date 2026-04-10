@@ -1,111 +1,111 @@
+import { useState } from "react";
 import { CONTACT_DATA } from "@/data/contact";
-import { HERO_DATA } from "@/data/hero";
-import { motion } from "framer-motion";
-import { FaWhatsapp, FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 
-export function ContactSection() {
-	const data = CONTACT_DATA;
+const container: Variants = {
+	hidden: { opacity: 0 },
+	show: {
+		opacity: 1,
+		transition: { staggerChildren: 0.1 },
+	},
+};
+
+const item: Variants = {
+	hidden: { opacity: 0, y: 20 },
+	show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200 } },
+};
+
+export const ContactSection = () => {
+	const [copied, setCopied] = useState(false);
+
+	const handleCopy = () => {
+		navigator.clipboard.writeText(CONTACT_DATA.email);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	};
 
 	return (
-		<section className="relative flex flex-col gap-10 pt-16 pb-10 border-t border-white/10 overflow-hidden">
-			{/* BACKGROUND GLOW */}
+		<section className="w-full px-6 py-24 max-w-6xl mx-auto">
 			<motion.div
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 0.08 }}
-				transition={{ duration: 1 }}
-				className="absolute left-1/2 bottom-0 -translate-x-1/2 w-[600px] h-[600px] bg-primary blur-[140px]"
-			/>
-
-			{/* ================= CTA ================= */}
-			<motion.div
-				initial={{ opacity: 0, y: 40 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				viewport={{ once: true }}
-				transition={{ duration: 0.7 }}
-				className="flex flex-col items-center text-center gap-4"
-			>
-				<h3 className="text-white text-xl md:text-2xl font-semibold">
-					Let’s Build Something Great Together
-				</h3>
-
-				<p className="text-gray-400 max-w-md">
-					Open for freelance, collaboration, or just a friendly chat.
-				</p>
-			</motion.div>
-
-			{/* ================= SOCIAL ================= */}
-			<motion.div
+				variants={container}
 				initial="hidden"
 				whileInView="show"
 				viewport={{ once: true }}
-				variants={{
-					hidden: {},
-					show: {
-						transition: {
-							staggerChildren: 0.15,
-						},
-					},
-				}}
-				className="flex justify-center gap-6"
+				className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-zinc-900 rounded-[3rem] p-8 md:p-16 text-white relative overflow-hidden"
 			>
-				{[
-					{
-						href: `https://api.whatsapp.com/send?phone=${data.whatsapp}`,
-						icon: FaWhatsapp,
-						label: "WhatsApp",
-					},
-					{
-						href: data.linkedin,
-						icon: FaLinkedin,
-						label: "LinkedIn",
-					},
-					{
-						href: `mailto:${data.email}`,
-						icon: FaEnvelope,
-						label: "Email",
-					},
-				].map((item, i) => {
-					const Icon = item.icon;
+				{/* Background Decoration */}
+				<div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 blur-[100px] -mr-32 -mt-32 rounded-full" />
 
-					return (
-						<motion.a
-							key={i}
-							href={item.href}
-							target="_blank"
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							whileHover={{ scale: 1.15, y: -4 }}
-							transition={{ duration: 0.3 }}
-							className="group relative flex flex-col items-center gap-2"
+				{/* Left Content: Title & Subtitle */}
+				<motion.div
+					variants={item}
+					className="md:col-span-2 space-y-6 relative z-10"
+				>
+					<h2 className="text-5xl md:text-7xl font-serif leading-[1.1] tracking-tighter">
+						{CONTACT_DATA.title}
+					</h2>
+					<p className="text-zinc-400 text-lg md:text-xl max-w-md font-medium leading-relaxed">
+						{CONTACT_DATA.subtitle}
+					</p>
+				</motion.div>
+
+				{/* Right Content: CTA & Socials */}
+				<motion.div
+					variants={item}
+					className="flex flex-col justify-end gap-10 relative z-10"
+				>
+					<div className="space-y-4">
+						<button
+							onClick={handleCopy}
+							className="group relative flex flex-col items-start"
 						>
-							{/* ICON */}
-							<div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(153,255,6,0.4)]">
-								<Icon className="text-lg text-gray-300 group-hover:text-primary transition" />
-							</div>
-
-							{/* LABEL */}
-							<span className="text-xs text-gray-400 group-hover:text-white transition">
-								{item.label}
+							<span className="text-zinc-500 text-xs font-black uppercase tracking-[0.2em] mb-2">
+								Get in touch
+							</span>
+							<span className="text-2xl md:text-3xl font-bold border-b-2 border-zinc-700 group-hover:border-indigo-500 transition-colors pb-1">
+								{CONTACT_DATA.email}
 							</span>
 
-							{/* glow */}
-							<div className="absolute inset-0 opacity-0 group-hover:opacity-100 blur-xl bg-primary/20 transition"></div>
-						</motion.a>
-					);
-				})}
-			</motion.div>
+							{/* Mini Toast */}
+							<AnimatePresence>
+								{copied && (
+									<motion.span
+										initial={{ opacity: 0, x: 10 }}
+										animate={{ opacity: 1, x: 20 }}
+										exit={{ opacity: 0 }}
+										className="absolute right-0 top-0 text-indigo-400 text-[10px] font-bold uppercase"
+									>
+										Copied!
+									</motion.span>
+								)}
+							</AnimatePresence>
+						</button>
+					</div>
 
-			{/* ================= FOOTER ================= */}
-			<motion.div
-				initial={{ opacity: 0 }}
-				whileInView={{ opacity: 1 }}
-				viewport={{ once: true }}
-				transition={{ delay: 0.3 }}
-				className="text-center text-gray-500 text-xs mt-6"
-			>
-				© {new Date().getFullYear()} {HERO_DATA?.headlines?.[0]}. All rights
-				reserved.
+					<div className="flex flex-wrap gap-3">
+						{CONTACT_DATA.socials.map((s, i) => (
+							<a
+								key={i}
+								href={s.url}
+								target="_blank"
+								rel="noreferrer"
+								className="px-6 py-3 rounded-2xl bg-zinc-800 text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300"
+							>
+								{s.label}
+							</a>
+						))}
+					</div>
+				</motion.div>
+
+				{/* Bottom Bar */}
+				<motion.div
+					variants={item}
+					className="md:col-span-3 pt-12 mt-12 border-t border-zinc-800 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600"
+				>
+					<p>© {new Date().getFullYear()} PORTFOLIO TEMPLATE</p>
+					<p>MADE FOR CREATIVES</p>
+				</motion.div>
 			</motion.div>
 		</section>
 	);
-}
+};

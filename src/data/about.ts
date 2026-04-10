@@ -1,26 +1,51 @@
-import type { IconType } from "react-icons";
-import { FaHardHat } from "react-icons/fa"; // Mengganti FaUniversity menjadi FaHardHat agar lebih relevan dengan tambang
+export type AboutCard =
+	| {
+			type: "bio";
+			title: string;
+			description: string;
+	  }
+	| {
+			type: "facts";
+			items: string[];
+	  }
+	| {
+			type: "tools";
+			items: { name: string }[];
+	  }
+	| {
+			type: "quote";
+			text: string;
+	  }
+	| {
+			type: "availability";
+			status: string;
+	  };
 
-export type AboutData = {
-	title: string;
-	description: string;
-	education: {
-		degree: string;
-		institution: string;
-		period: string;
-		gpa: string;
-		icon: IconType;
-	};
-};
-
-export const ABOUT_DATA: AboutData = {
-	title: "About Me",
-	description: `Dedicated Mining Engineer with a passion for optimizing resource extraction and site safety. Experienced in open-pit planning and heavy equipment management, with a strong focus on operational efficiency, environmental compliance, and sustainable mining practices. Always implementing advanced geological modeling to maximize site productivity.`,
-	education: {
-		degree: "B.Eng. Mining Engineering",
-		institution: "National School of Mines",
-		period: "2018 - 2022",
-		gpa: "3.75",
-		icon: FaHardHat,
+export const ABOUT_DATA: AboutCard[] = [
+	{
+		type: "bio",
+		title: "About Me",
+		description:
+			"A creative designer who loves turning ideas into visuals that people actually remember. I enjoy experimenting with bold concepts and playful layouts.",
 	},
-};
+	{
+		type: "facts",
+		items: [
+			"🎯 Focused on branding & social media design",
+			"☕ Coffee fuels my creativity",
+			"🎧 Always designing with music",
+		],
+	},
+	{
+		type: "tools",
+		items: [{ name: "Figma" }, { name: "Photoshop" }, { name: "Illustrator" }],
+	},
+	{
+		type: "quote",
+		text: "Design is not just what it looks like — it’s how it feels.",
+	},
+	{
+		type: "availability",
+		status: "Open for freelance & full-time 🚀",
+	},
+];

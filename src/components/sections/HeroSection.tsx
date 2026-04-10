@@ -1,99 +1,144 @@
 import { HERO_DATA } from "@/data/hero";
-import { ReactTyped } from "react-typed";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
-export function HeroSection() {
-	const data = HERO_DATA;
+const container: Variants = {
+	hidden: { opacity: 0 },
+	show: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.15,
+			delayChildren: 0.3,
+		},
+	},
+};
 
+const item: Variants = {
+	hidden: { opacity: 0, scale: 0.9, y: 20 },
+	show: {
+		opacity: 1,
+		scale: 1,
+		y: 0,
+		transition: {
+			type: "spring", // TypeScript sekarang tahu ini adalah "spring" literal, bukan string biasa
+			stiffness: 260,
+			damping: 20,
+		},
+	},
+};
+
+export const HeroSection = () => {
 	return (
-		<section className="relative min-h-screen flex items-center overflow-hidden">
-			{/* BACKGROUND GLOW */}
-			<div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-primary opacity-10 blur-[140px]" />
+		<section className="w-full px-6 py-16 md:py-24 max-w-6xl mx-auto font-sans selection:bg-black selection:text-white">
+			<motion.div
+				variants={container}
+				initial="hidden"
+				animate="show"
+				className="grid grid-cols-2 md:grid-cols-4 auto-rows-[160px] gap-5"
+			>
+				{HERO_DATA.map((card, i) => {
+					// BASE CARD CLASS
+					const cardBase =
+						"relative rounded-[2rem] p-6 transition-all duration-300 group overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 bg-white";
 
-			<div className="grid md:grid-cols-2 gap-16 w-full items-center relative z-10">
-				{/* ================= LEFT ================= */}
-				<motion.div
-					initial={{ opacity: 0, y: 40 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
-					className="flex flex-col gap-8"
-				>
-					{/* HEADLINE */}
-					<h1 className="text-primary font-bold text-[clamp(2.5rem,6vw,4.5rem)] leading-tight drop-shadow-[0_0_20px_#99FF06]">
-						<ReactTyped
-							strings={data.headlines}
-							typeSpeed={80}
-							backSpeed={40}
-							loop
-						/>
-					</h1>
+					if (card.type === "intro") {
+						return (
+							<motion.div
+								key={i}
+								variants={item}
+								className={`${cardBase} col-span-2 row-span-2 flex flex-col justify-between bg-zinc-50`}
+							>
+								<div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform duration-500">
+									<span className="text-8xl font-serif">"</span>
+								</div>
+								<div>
+									<span className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2 block">
+										Available for Projects
+									</span>
+									<h1 className="text-4xl md:text-5xl font-serif leading-tight">
+										Hi, I'm{" "}
+										<span className="italic text-indigo-600">{card.name}</span>
+									</h1>
+									<p className="text-xl font-medium mt-3 text-gray-600">
+										{card.tagline}
+									</p>
+								</div>
+								<p className="text-sm leading-relaxed text-gray-500 max-w-xs">
+									{card.description}
+								</p>
+							</motion.div>
+						);
+					}
 
-					{/* TITLE */}
-					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.3 }}
-						className="text-xl text-gray-300"
-					>
-						{data.title}
-					</motion.p>
+					if (card.type === "image") {
+						return (
+							<motion.div
+								key={i}
+								variants={item}
+								className={`${cardBase} row-span-2 !p-0 shadow-lg`}
+							>
+								<img
+									src={card.src}
+									alt={card.alt}
+									className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-110"
+								/>
+							</motion.div>
+						);
+					}
 
-					{/* DESCRIPTION */}
-					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.5 }}
-						className="text-gray-400 leading-relaxed max-w-lg"
-					>
-						{data.description}
-					</motion.p>
+					if (card.type === "sticker") {
+						return (
+							<motion.div
+								key={i}
+								variants={item}
+								className={`${cardBase} flex items-center justify-center bg-yellow-50 border-yellow-100`}
+							>
+								<span className="text-sm font-bold tracking-tight text-yellow-800 rotate-[-2deg] group-hover:rotate-0 transition-transform">
+									{card.text}
+								</span>
+							</motion.div>
+						);
+					}
 
-					{/* BUTTON */}
-					<motion.a
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.7 }}
-						href={`https://api.whatsapp.com/send?phone=${data.phone}`}
-						target="_blank"
-						className="relative w-fit px-8 py-3 rounded-xl bg-primary text-black font-semibold overflow-hidden group"
-					>
-						<span className="relative z-10">Hire Me</span>
+					if (card.type === "cta") {
+						return (
+							<motion.div
+								key={i}
+								variants={item}
+								className={`${cardBase} col-span-2 flex items-center justify-between bg-zinc-900 text-white`}
+							>
+								<button className="h-full w-1/2 flex items-center justify-center font-bold text-lg hover:bg-white hover:text-black transition-colors rounded-2xl">
+									{card.primary}
+								</button>
+								<div className="h-12 w-[1px] bg-zinc-700"></div>
+								<button className="h-full w-1/2 flex items-center justify-center font-medium opacity-80 hover:opacity-100 transition-opacity underline decoration-zinc-500 underline-offset-4">
+									{card.secondary}
+								</button>
+							</motion.div>
+						);
+					}
 
-						{/* glow hover */}
-						<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.2),transparent_70%)]" />
-						<div className="absolute inset-0 blur-md opacity-50 group-hover:opacity-80 transition bg-primary" />
-					</motion.a>
-				</motion.div>
-
-				{/* ================= RIGHT ================= */}
-				<motion.div
-					initial={{ opacity: 0, scale: 0.9 }}
-					animate={{ opacity: 1, scale: 1 }}
-					transition={{ duration: 0.8, delay: 0.3 }}
-					className="flex justify-center"
-				>
-					<div className="relative group">
-						{/* GLOW */}
-						<div className="absolute inset-0 rounded-full bg-primary blur-[100px] opacity-20 group-hover:opacity-40 transition"></div>
-
-						{/* FLOATING ANIMATION */}
-						<motion.img
-							src={data.image}
-							alt="profile"
-							className="relative w-[320px] h-[320px] object-cover rounded-full border border-white/10 shadow-[0_0_40px_rgba(153,255,6,0.2)]"
-							animate={{ y: [0, -12, 0] }}
-							transition={{
-								duration: 4,
-								repeat: Infinity,
-								ease: "easeInOut",
-							}}
-						/>
-
-						{/* RING */}
-						<div className="absolute inset-0 rounded-full border border-primary/20 animate-pulse"></div>
-					</div>
-				</motion.div>
-			</div>
+					if (card.type === "social") {
+						return (
+							<motion.div
+								key={i}
+								variants={item}
+								className={`${cardBase} col-span-2 flex items-center justify-around`}
+							>
+								{card.items.map((s, idx) => (
+									<a
+										key={idx}
+										href={s.url}
+										className="text-sm font-bold uppercase tracking-tighter hover:text-indigo-600 transition-colors relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-indigo-600 hover:after:w-full after:transition-all"
+									>
+										{s.label}
+									</a>
+								))}
+							</motion.div>
+						);
+					}
+					return null;
+				})}
+			</motion.div>
 		</section>
 	);
-}
+};

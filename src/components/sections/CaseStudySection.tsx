@@ -18,7 +18,7 @@ export const CaseStudySection = () => {
 	const selected = CASE_STUDY_DATA.find((i) => i.id === active);
 
 	return (
-		<section className="w-full px-6 py-20 max-w-6xl mx-auto">
+		<section id="work" className="w-full px-6 py-20 max-w-6xl mx-auto">
 			{/* Editorial Header */}
 			<div className="mb-16 border-l-4 border-black pl-6">
 				<h2 className="text-4xl md:text-5xl font-serif tracking-tight">

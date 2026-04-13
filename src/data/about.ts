@@ -31,9 +31,9 @@ export const ABOUT_DATA: AboutCard[] = [
 	{
 		type: "facts",
 		items: [
-			"🎯 Focused on branding & social media design",
-			"☕ Coffee fuels my creativity",
-			"🎧 Always designing with music",
+			"Focused on branding & social media design",
+			"Coffee fuels my creativity",
+			"Always designing with music",
 		],
 	},
 	{
@@ -42,10 +42,10 @@ export const ABOUT_DATA: AboutCard[] = [
 	},
 	{
 		type: "quote",
-		text: "Design is not just what it looks like — it’s how it feels.",
+		text: "Design is not just what it looks like — it's how it feels.",
 	},
 	{
 		type: "availability",
-		status: "Open for freelance & full-time 🚀",
+		status: "Open for freelance & full-time",
 	},
 ];

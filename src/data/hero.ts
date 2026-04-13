@@ -41,11 +41,11 @@ export const HERO_DATA: HeroCard[] = [
 	},
 	{
 		type: "sticker",
-		text: "🎨 Creative Thinker",
+		text: "Creative Thinker",
 	},
 	{
 		type: "sticker",
-		text: "🚀 Open for Work",
+		text: "Open for Work",
 	},
 	{
 		type: "cta",

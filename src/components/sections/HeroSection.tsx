@@ -106,13 +106,27 @@ export const HeroSection = () => {
 								variants={item}
 								className={`${cardBase} col-span-2 flex items-center justify-between bg-zinc-900 text-white`}
 							>
-								<button className="h-full w-1/2 flex items-center justify-center font-bold text-lg hover:bg-white hover:text-black transition-colors rounded-2xl">
+								{/* PRIMARY → SMOOTH SCROLL */}
+								<button
+									onClick={() => {
+										const el = document.getElementById("work");
+										el?.scrollIntoView({ behavior: "smooth" });
+									}}
+									className="h-full w-1/2 flex items-center justify-center font-bold text-lg hover:bg-white hover:text-black transition-colors rounded-2xl"
+								>
 									{card.primary}
 								</button>
+
 								<div className="h-12 w-[1px] bg-zinc-700"></div>
-								<button className="h-full w-1/2 flex items-center justify-center font-medium opacity-80 hover:opacity-100 transition-opacity underline decoration-zinc-500 underline-offset-4">
+
+								{/* SECONDARY → DOWNLOAD CV */}
+								<a
+									href="/CV.pdf"
+									download
+									className="h-full w-1/2 flex items-center justify-center font-medium opacity-80 hover:opacity-100 transition-opacity underline decoration-zinc-500 underline-offset-4"
+								>
 									{card.secondary}
-								</button>
+								</a>
 							</motion.div>
 						);
 					}
